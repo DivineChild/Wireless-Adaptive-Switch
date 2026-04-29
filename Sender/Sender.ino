@@ -11,8 +11,7 @@
 
 #include <esp_now.h>
 #include <WiFi.h>
-#include "Pair.hpp"
-#include "Commands.hpp"
+#include <Wireless-Adaptive-Switch.hpp>
 
 uint8_t peerMAC[6];
 
@@ -54,11 +53,7 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
     Pair::saveMAC(peerMAC);
 
     // Register Peer
-    esp_now_peer_info_t newPeer = {};
-    memcpy(newPeer.peer_addr, peerMAC, 6);
-    newPeer.channel = 0;
-    newPeer.encrypt = false;
-    esp_now_add_peer(&newPeer);
+    Pair::addPeer(peerMAC);
   }
 }
 
@@ -81,13 +76,8 @@ void setup() {
   esp_now_register_recv_cb(OnDataRecv);
 
   
-  // Register peer
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;  
-  peerInfo.encrypt = false;
-  
-  // Add peer        
-  if (esp_now_add_peer(&peerInfo) != ESP_OK){
+  // Register and add peer        
+  if (Pair::addPeer(broadcastAddress) != ESP_OK){
     Serial.println("Failed to add peer");
     return;
   }

@@ -1,6 +1,6 @@
 #include <esp_now.h>
 #include <WiFi.h>
-#include "../Sender/Commands.hpp"
+#include <Wireless-Adaptive-Switch.hpp>
 
 typedef struct struct_message {
   Commands::command code;
@@ -25,17 +25,11 @@ if (myData.code == Commands::PAIR) {
   uint8_t senderMAC[6];
   memcpy(senderMAC, info->src_addr, 6);
 
-  // Register sender as a peer first
-  esp_now_peer_info_t peerInfo = {};
-  memcpy(peerInfo.peer_addr, senderMAC, 6);
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-
   if (!esp_now_is_peer_exist(senderMAC)) {
-    esp_now_add_peer(&peerInfo);
+    Pair::addPeer(senderMAC);
   }
 
-  // Now reply with our MAC
+  // Now reply with reciever MAC
   uint8_t myMac[6];
   WiFi.macAddress(myMac);
   Serial.println(esp_now_send(senderMAC, myMac, 6));

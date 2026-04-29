@@ -1,4 +1,5 @@
 #include "Pair.hpp"
+#include <esp_now.h>
 static Preferences prefs;
 
 
@@ -20,3 +21,11 @@ bool Pair::hasSavedMAC() {
   prefs.end();
   return exists;
 }
+
+esp_err_t Pair::addPeer(uint8_t* peerMAC) {
+  esp_now_peer_info_t newPeer = {};
+  memcpy(newPeer.peer_addr, peerMAC, 6);
+  newPeer.channel = 0;
+  newPeer.encrypt = false;
+  return esp_now_add_peer(&newPeer);
+} 
