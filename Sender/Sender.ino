@@ -52,6 +52,7 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
     paired = true;
     Serial.println("Paired!");
     Pair::saveMAC(peerMAC);
+    Pair::loadMAC(peerMAC);
 
     // Register Peer
     Pair::addPeer(peerMAC);
@@ -73,7 +74,8 @@ void setup() {
     return;
   }
 
-  // paired = Pair::hasSavedMAC();
+  paired = Pair::hasSavedMAC();
+
 
   // Once ESPNow is successfully Init, we will register for Send CB to
   // get the status of Transmitted packet
@@ -81,12 +83,11 @@ void setup() {
   esp_now_register_recv_cb(OnDataRecv);
 
   if (paired) {
-    uint8_t mac[6];
-    Pair::loadMAC(mac);
+    Pair::loadMAC(peerMAC);
 
-    Util::macToString(mac);
+    Util::macToString(peerMAC);
 
-    Pair::addPeer(mac);
+    Pair::addPeer(peerMAC);
   } else {
     // Register and add peer        
     if (Pair::addPeer(broadcastAddress) != ESP_OK){

@@ -5,15 +5,16 @@ static Preferences prefs;
 
 
 void Pair::saveMAC(uint8_t macArray[6]) {
-  Serial.printf("Saving: %s\n", Util::macToString(macArray));
 	prefs.begin("wswitch", false);
   prefs.putBytes("peer_mac", macArray, 6);
+  Serial.printf("Saving: %s\n", Util::macToString(macArray));
   prefs.end();
 }
 
 void Pair::loadMAC(uint8_t macArray[6]) {
   prefs.begin("wswitch", true);
   prefs.getBytes("peer_mac", macArray, 6);
+  Serial.printf("Loading: %s\n", Util::macToString(macArray));
   prefs.end();
 }
 
