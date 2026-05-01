@@ -27,6 +27,8 @@ bool paired = false;
 unsigned long lastBroadcast = 0;
 const int BROADCAST_INTERVAL = 500; // ms
 
+int buttonPIN = 15;
+
 // Create a struct_message called myData
 struct_message myData;
 
@@ -68,6 +70,9 @@ void setup() {
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
 
+  pinMode(buttonPIN, INPUT);
+
+
   // Init ESP-NOW
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
@@ -107,7 +112,7 @@ void loop() {
     lastWrite = !lastWrite;
 
     // Set values to send
-    myData.code = lastWrite ? Commands::OFF : Commands::ON;
+    myData.code = digitalRead(buttonPIN) == LOW ? Commands::OFF : Commands::ON;
     
     Serial.printf("MAC: %s\n", Util::macToString(peerMAC));
 
@@ -120,6 +125,6 @@ void loop() {
     else {
       Serial.println("Error sending the data");
     }
-    delay(2000);
+    delay(20);
   }
 }
