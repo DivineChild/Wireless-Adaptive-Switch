@@ -70,7 +70,7 @@ void setup() {
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
 
-  pinMode(buttonPIN, INPUT);
+  pinMode(buttonPIN, INPUT_PULLDOWN);
 
 
   // Init ESP-NOW

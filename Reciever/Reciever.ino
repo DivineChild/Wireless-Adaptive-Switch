@@ -8,6 +8,8 @@ typedef struct struct_message {
 
 struct_message myData;
 
+const int BUTTON = 15;
+
 // Receive callback - correct signature for core 3.x
 void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len) {
 if (len != sizeof(myData)) {
@@ -19,7 +21,7 @@ if (len != sizeof(myData)) {
   Serial.println(len);
   Serial.println(myData.code);
 
-if (myData.code == Commands::PAIR) {
+if (myData.code == Commands::PAIR && !Pair::hasSavedMAC()) {
   Serial.println("Discover ping");
   
   uint8_t senderMAC[6];
@@ -35,9 +37,9 @@ if (myData.code == Commands::PAIR) {
   WiFi.macAddress(myMac);
   Serial.println(esp_now_send(senderMAC, myMac, 6));
 } else if (myData.code == Commands::ON) {
-    digitalWrite(2, HIGH);
+    digitalWrite(BUTTON, HIGH);
   } else if (myData.code == Commands::OFF) {
-    digitalWrite(2, LOW);
+    digitalWrite(BUTTON, LOW);
   }
 }
 
@@ -60,7 +62,7 @@ void setup() {
 
   esp_now_register_recv_cb(OnDataRecv);
 
-  pinMode(2, OUTPUT);
+  pinMode(BUTTON, OUTPUT);
 }
 
 void loop() {
