@@ -1,14 +1,3 @@
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp-now-esp32-arduino-ide/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
-
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wireless-Adaptive-Switch.hpp>
@@ -40,6 +29,7 @@ bool lastWrite = false;
 // callback when data is sent
 void OnDataSent(const wifi_tx_info_t *info, esp_now_send_status_t status) {
   Serial.print("\r\nLast Packet Send Status:\t");
+
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
@@ -70,7 +60,7 @@ void setup() {
 
   Pair::clearSettings();
  
-  // Set device as a Wi-Fi Station
+  // Set device as a Wi-Fi Station (Removable ?)
   WiFi.mode(WIFI_STA);
 
   pinMode(buttonPIN, INPUT_PULLDOWN);
